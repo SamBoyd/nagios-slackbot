@@ -1,0 +1,18 @@
+{
+    "presets": [
+      ["env", {
+        "targets": {
+          "node": "6"
+        }
+      }],
+      "stage-3"
+    ],
+    "plugins": [
+      "transform-runtime",
+      ["module-alias",[
+        { "src": "./src", "expose": "~"}
+      ]]
+    ]
+
+}
+

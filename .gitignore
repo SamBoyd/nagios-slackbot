@@ -1,0 +1,11 @@
+### Intellij ###
+.idea/*
+!.idea/runConfigurations
+
+### Node ###
+node_modules
+npm-debug.log
+
+dist
+errorShots
+bot.js
