@@ -1,4 +1,4 @@
-
+import { isServiceReal, isHostReal } from './thrukServiceLocator'
 
 export const parse = (m) => {
     const patternString = /acknowledge (.+(?=on))on (.+)/gi;
@@ -8,9 +8,7 @@ export const parse = (m) => {
     let bool =  patt.test(message);
 
     if (bool) {
-        console.log('patternString', patternString);
         var matches = patternString.exec(message);
-        console.log('matches', matches);
 
         if (matches.length == 0) {
             return {
@@ -29,9 +27,19 @@ export const parse = (m) => {
     }
 };
 
-export const acknowledgement = (bot, message) => {
+export const handleAcknowledgement = (bot, message) => {
 
     let parsedAcknowledge = parse(message.text);
+
+    if (isServiceReal()) {
+        bot.reply(message, 'I can\'t seem to find that service');
+        return
+    };
+
+    if (isHostReal()) {
+        bot.reply(message, 'I can\'t seem to find that host');
+        return
+    };
 
     bot.reply(message, "Service:" + parsedAcknowledge.service + ", Host:" + parsedAcknowledge.host)
 

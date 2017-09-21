@@ -1,7 +1,9 @@
 import { describe, it } from 'mocha'
 import { expect, should } from 'chai'
+var sinon = require('sinon');
 
-import { parse, acknowledgement } from '../src/acknowledgeHandler'
+import { parse, handleAcknowledgement } from '../src/acknowledgeHandler'
+import { serviceLocator } from '../src/thrukServiceLocator'
 
 describe('Acknowledge Hander', () => {
     it('should fail to parse with an error', () => {
@@ -22,15 +24,41 @@ describe('Acknowledge Hander', () => {
 
     it('should respond to a with the correct msg', () => {
         const inputText = {'text': 'acknowledge Puppet run result across all exchanges on hostless-supply-side'};
+        const bot = { reply: function() {}};
+        sinon.spy(bot, 'reply');
 
-        const bot =  {};
+        handleAcknowledgement(bot, inputText);
 
-        bot.reply = (message, text) => {
-                expect(text).to.equal('Service:Puppet run result across all exchanges, Host:hostless-supply-side')
-        };
+        const replyCall = bot.reply.getCall(0);
 
-        acknowledgement(bot, inputText)
+        expect('Service:Puppet run result across all exchanges, Host:hostless-supply-side').to.equal(replyCall.args[1])
+        expect(spy.calledOnce).to.be.true
     });
-    
+
+    it.only('should respond with a error if the input is not a real service', () => {
+        const inputText = {'text': 'acknowledge Puppet run result across all exchanges on hostless-supply-side'};
+        const bot = { reply: function() {}};
+        var spy  = sinon.spy(bot, 'reply');
+        
+        handleAcknowledgement(bot, inputText);
+
+        const replyCall = bot.reply.getCall(0);
+
+        expect('I can\'t seem to find that service').to.equal(replyCall.args[1]);
+        expect(spy.calledOnce).to.be.true
+    });
+
+    it('should respond with a error if the input is not a real host', () => {
+        const inputText = {'text': 'acknowledge Puppet run result across all exchanges on hostless-supply-side'};
+        const bot = { reply: function() {}};
+        var spy  = sinon.spy(bot, 'reply');
+
+        handleAcknowledgement(bot, inputText);
+
+        const replyCall = bot.reply.getCall(0);
+
+        expect('I can\'t seem to find that service').to.equal(replyCall.args[1]);
+        expect(spy.calledOnce).to.be.true
+    })
 });
 

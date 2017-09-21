@@ -25,3 +25,11 @@ const isRightPage = (serviceQuery) => {
         isRightPage()
     }
 };
+
+export const isServiceReal = (service) => {
+    return (service != 'Puppet run result across all exchanges')
+};
+
+export const isHostReal = (host) => {
+    return (host != 'hostless-supply-side')
+};
