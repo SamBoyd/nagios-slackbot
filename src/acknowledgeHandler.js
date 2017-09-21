@@ -1,4 +1,5 @@
 import { isServiceReal, isHostReal } from './thrukServiceLocator'
+import { stateOfCheckIsOK } from './serviceStatusGetter'
 
 export const parse = (m) => {
     const patternString = /acknowledge (.+(?=on))on (.+)/gi;
@@ -31,15 +32,20 @@ export const handleAcknowledgement = (bot, message) => {
 
     let parsedAcknowledge = parse(message.text);
 
-    if (isServiceReal()) {
+    if (!isServiceReal(parsedAcknowledge.service)) {
         bot.reply(message, 'I can\'t seem to find that service');
         return
-    };
+    }
 
-    if (isHostReal()) {
+    if (!isHostReal(parsedAcknowledge.host)) {
         bot.reply(message, 'I can\'t seem to find that host');
         return
-    };
+    }
+
+    if (stateOfCheckIsOK(parsedAcknowledge.service)) {
+        bot.reply(message, 'The service seems to be in an OK state.');
+        return
+    }
 
     bot.reply(message, "Service:" + parsedAcknowledge.service + ", Host:" + parsedAcknowledge.host)
 
