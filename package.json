@@ -9,7 +9,7 @@
   "scripts": {
     "test": "nightwatch --config config/nightwatch/nightwatch.local.conf.js",
     "test:acceptance": "npm run start:selenium && ./node_modules/.bin/wdio wdio.conf.js && npm run stop:selenium",
-    "test:wdio": "./node_modules/.bin/wdio wdio.conf.js",
+    "test:wdionpm": "./node_modules/.bin/wdio wdio.conf.js",
     "start": "token=xoxb-240575429591-pNGun5HgBKymVIuQqhRTnNhr node bot.js",
     "start:selenium": "./node_modules/selenium-standalone/bin/selenium-standalone start &",
     "stop:selenium": "pkill -f selenium-standalone"
@@ -18,8 +18,10 @@
   "license": "ISC",
   "dependencies": {
     "babel-plugin-module-alias": "^1.6.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.0",
     "babel-preset-stage-3": "^6.24.1",
+    "babel-register": "^6.26.0",
     "botkit": "^0.6.0",
     "chai": "^4.1.2",
     "eslint": "^4.6.1",
@@ -28,7 +30,10 @@
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.4",
     "mocha": "^3.5.1",
-    "promise": "^8.0.1"
+    "nock": "^9.0.21",
+    "promise": "^8.0.1",
+    "sinon": "^4.0.0",
+    "superagent": "^3.6.0"
   },
   "devDependencies": {
     "wdio-mocha-framework": "^0.5.11"
