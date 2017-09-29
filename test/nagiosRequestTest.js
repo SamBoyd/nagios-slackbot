@@ -7,7 +7,7 @@ const superagent = require('superagent');
 
 import { sendPost } from '../src/nagiosRequest'
 
-describe.only('sendPost', () => {
+describe('sendPost', () => {
     it('should send the request to the correct host', () => {
 
         const expectedHost = 'http://monitor.unrulymedia.com/api';
@@ -24,7 +24,7 @@ describe.only('sendPost', () => {
     it('should send the correct data', done => {
         const expectedData = { body: 'some data'};
 
-        var spyKindOf = nock('http://monitor.unrulymedia.com')
+        nock('http://monitor.unrulymedia.com')
             .post('/api', expectedData )
             .reply(200, { ok: true });
 

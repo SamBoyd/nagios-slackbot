@@ -1,5 +1,6 @@
 import { isServiceReal, isHostReal } from './thrukServiceLocator'
 import { stateOfCheckIsOK } from './serviceStatusGetter'
+import { acknowledgement } from './nagiosApi'
 
 export const parse = (m) => {
     const patternString = /acknowledge (.+(?=on))on (.+)/gi;
@@ -47,7 +48,11 @@ export const handleAcknowledgement = (bot, message) => {
         return
     }
 
-    bot.reply(message, "Service:" + parsedAcknowledge.service + ", Host:" + parsedAcknowledge.host)
+    acknowledgement(parsedAcknowledge.host, parsedAcknowledge.service, (err, res) => {
+        if (res) {
+            bot.reply(message, "Service:" + parsedAcknowledge.service + ", Host:" + parsedAcknowledge.host)
+        }
+    });
 
     // controller.storage.users.get(message.user, function(err, user) {
     //     var regex = new Regex(/acknowledge (.+(?=on))on (.+)/g);
