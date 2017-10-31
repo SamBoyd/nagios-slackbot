@@ -8,7 +8,7 @@ var sinon = require('sinon');
 import { handleAcknowledgement } from '../src/acknowledgeHandler'
 import { serviceLocator } from '../src/thrukServiceLocator'
 
-describe.only('Acknowledging', () => {
+describe('Acknowledging', () => {
     it('should reply when successfully acknowledged', done => {
         const inputText = {'text': 'acknowledge Puppet run result across all exchanges on hostless-supply-side'};
         const bot = {

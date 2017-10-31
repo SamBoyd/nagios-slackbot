@@ -25,23 +25,19 @@ describe('Acknowledge Hander', () => {
     });
     
     describe('handleAcknowledge', () => {
-        xit('should respond to a with the correct msg', () => {
+        it('should respond to a with the correct msg', done => {
             const inputText = {'text': 'acknowledge Puppet run result across all exchanges on hostless-supply-side'};
             const bot = {
-                reply: function () {
-                }
+                reply: function (orginalMessage, message) {
+                    expect(message).to.equal('Service:Puppet run result across all exchanges, Host:hostless-supply-side');
+                    done();
+                 }
             };
-            const spy = sinon.spy(bot, 'reply');
 
             handleAcknowledgement(bot, inputText);
-
-            const replyCall = bot.reply.getCall(0);
-
-            expect(replyCall.args[1]).to.equal('Service:Puppet run result across all exchanges, Host:hostless-supply-side')
-            expect(spy.calledOnce).to.be.true
         });
 
-        xit('should respond with a error if the input is not a real service', () => {
+        it('should respond with a error if the input is not a real service', () => {
             const inputText = {'text': 'acknowledge This is not a service on hostless-supply-side'};
             const bot = {
                 reply: function () {

@@ -29,7 +29,7 @@ describe('sendPost', () => {
             .reply(200, { ok: true });
 
 
-        sendPost(expectedData, (res) => {
+        sendPost(expectedData, (err, res) => {
             expect(res.body).to.deep.equal({ ok: true });
             done()
         });
