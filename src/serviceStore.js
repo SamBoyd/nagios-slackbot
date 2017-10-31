@@ -18,8 +18,13 @@ export const isAService = (callback, host, service) => {
         if (err) {
             callback(err, null)
         } else {
-            const serviceExists =  service in res[host].services;
-            return callback(null, serviceExists)
+            const hostExists = host in res;
+            if (hostExists) {
+                const serviceExists = service in res[host].services;
+                return callback(null, serviceExists)
+            } else {
+                callback(null, false)
+            }
         }
     })
 };

@@ -30,6 +30,24 @@ describe('ServiceStore', () => {
         };
 
         isAService(callback, 'unrulyx-sg-018', 'Check auction log archiving on S3');
+    });
+
+    it('should return false when not a service', done => {
+        const callback= (err, res) => {
+            expect(res).to.be.false;
+            done()
+        };
+
+        isAService(callback, 'unrulyx-sg-018', 'Definitely not a service');
+    });
+
+    it('should return false when not a host', done => {
+        const callback= (err, res) => {
+            expect(res).to.be.false;
+            done()
+        };
+
+        isAService(callback, 'probably-not-a-host', 'Check auction log archiving on S3');
     })
 });
 
