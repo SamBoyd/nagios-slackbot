@@ -23,7 +23,7 @@ describe('acknowledgmentBuilder', () => {
 
         const acknowledge = acknowledgmentBuilder(stubSendPost);
 
-        acknowledge(validInput.service, validInput.host, () => {})
+        acknowledge(validInput.host, validInput.service, () => {})
     });
 
 

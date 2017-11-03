@@ -13,7 +13,7 @@ export const getAllServices = (callback) => {
     })
 };
 
-export const isAService = (callback, host, service) => {
+export const isAService = (service, host, callback) => {
     getAllServices((err, res) => {
         if (err) {
             callback(err, null)

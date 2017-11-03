@@ -1,5 +1,5 @@
 
-export const acknowledgmentBuilder = sendPost => (service, host, cb) => {
+export const acknowledgmentBuilder = sendPost => (host, service, cb) => {
         const data = {
             host: host,
             service: service,
