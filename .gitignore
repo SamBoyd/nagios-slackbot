@@ -6,6 +6,6 @@
 node_modules
 npm-debug.log
 
-dist
+dist/*
 errorShots
 bot.js

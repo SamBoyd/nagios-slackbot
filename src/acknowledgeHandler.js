@@ -1,5 +1,5 @@
 import { stateOfCheckIsOK } from './nagiosServiceApi'
-import { acknowledgement } from './nagiosApi'
+import { acknowledgeService } from './nagiosApi'
 
 export const parse = (m) => {
     const patternString = /acknowledge (.+(?=on))on (.+)/gi;
@@ -42,7 +42,7 @@ export const handleAcknowledgement = (bot, message) => {
         return
     }
 
-    acknowledgement(parsedAcknowledge.host, parsedAcknowledge.service, (err, res) => {
+    acknowledgeService(parsedAcknowledge.host, parsedAcknowledge.service, (err, res) => {
         if (res) {
             bot.reply(message, "Service:" + parsedAcknowledge.service + ", Host:" + parsedAcknowledge.host)
         } else {
