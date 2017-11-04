@@ -2,113 +2,93 @@ import { describe, beforeEach, it } from 'mocha'
 import { expect, should } from 'chai'
 import nock from 'nock'
 
-import { parse, handleAcknowledgement } from '../src/acknowledgeHandler'
+import { handleAcknowledgement } from '../src/acknowledgeHandler'
 
-describe('Acknowledge Hander', () => {
-    describe('parse', () => {
-        it('should fail to parse with an error', () => {
-            let parsed = parse('acknowledge not a valid anything');
+describe('handleAcknowledge', () => {
+    beforeEach(() => {
+        nock('http://monitor.unrulymedia.com')
+            .get('/status')
+            .reply(200, sampleStatusReponse);
 
-            expect(parsed).to.have.property('error');
-        });
+        const acknowledgeRequestData = {
+            host: 'unrulyx-sg-018',
+            service: 'Upload Auction Logs to S3',
+            comment: "Service Upload Auction Logs to S3 acknowledged from slack",
+            sticky: true,
+            notify: false,
+            persistent: true,
+            author: "nagios-slack-bot"
+        };
 
-        it('should correctly parse an acknowledgement', () => {
-            let parsed = parse('acknowledge Puppet run result across all exchanges on hostless-supply-side');
+        const successfulResponse = {
+            content: "acknowledge",
+            result: true
+        };
 
-            expect(parsed).to.have.property('service');
-            expect(parsed).to.have.property('host');
+        nock('http://monitor.unrulymedia.com')
+            .post('/api', acknowledgeRequestData)
+            .reply(200, successfulResponse);
 
-            expect(parsed.service).to.equal('Puppet run result across all exchanges');
-            expect(parsed.host).to.equal('hostless-supply-side')
-        });
     });
-    
-    describe('handleAcknowledge', () => {
-        beforeEach(() => {
-            nock('http://monitor.unrulymedia.com')
-                .get('/status')
-                .reply(200, sampleStatusReponse);
 
-            const acknowledgeRequestData = {
-                host: 'unrulyx-sg-018',
-                service: 'Upload Auction Logs to S3',
-                comment: "Service Upload Auction Logs to S3 acknowledged from slack",
-                sticky: true,
-                notify: false,
-                persistent: true,
-                author: "nagios-slack-bot"
-            };
+    it('should respond to a with the correct msg on success', done => {
+        const inputText = {'text': 'acknowledge Upload Auction Logs to S3 on unrulyx-sg-018'};
+        const bot = {
+            reply: function (orginalMessage, message) {
+                expect(message).to.equal('Service:Upload Auction Logs to S3, Host:unrulyx-sg-018');
+                done();
+             }
+        };
 
-            const successfulResponse = {
-                content: "acknowledge",
-                result: true
-            };
+        handleAcknowledgement(bot, inputText);
+    });
 
-            nock('http://monitor.unrulymedia.com')
-                .post('/api', acknowledgeRequestData)
-                .reply(200, successfulResponse);
+    it('should respond with a error if the input is not a real service', done => {
+        const inputText = {'text': 'acknowledge This is not a service on hostless-supply-side'};
+        const bot = {
+            reply: function (originalMessage, message) {
+                expect(message).to.equal('I can\'t seem to find that service');
+                done()
+            }
+        };
 
-        });
+        handleAcknowledgement(bot, inputText);
+    });
 
-        it('should respond to a with the correct msg on success', done => {
-            const inputText = {'text': 'acknowledge Upload Auction Logs to S3 on unrulyx-sg-018'};
-            const bot = {
-                reply: function (orginalMessage, message) {
-                    expect(message).to.equal('Service:Upload Auction Logs to S3, Host:unrulyx-sg-018');
-                    done();
-                 }
-            };
+    it('should respond with a error if the input is not a real host', done => {
+        const inputText = {'text': 'acknowledge Puppet run result across all exchanges on not-a-host'};
+        const bot = {
+            reply: function (originalMessage, message) {
+                expect(message).to.equal('I can\'t seem to find that service');
+                done()
+            }
+        };
 
-            handleAcknowledgement(bot, inputText);
-        });
+        handleAcknowledgement(bot, inputText);
+    });
 
-        it('should respond with a error if the input is not a real service', done => {
-            const inputText = {'text': 'acknowledge This is not a service on hostless-supply-side'};
-            const bot = {
-                reply: function (originalMessage, message) {
-                    expect(message).to.equal('I can\'t seem to find that service');
-                    done()
-                }
-            };
+    it('should respond with an error if the inputted service is in an OK state', done => {
+        const inputText = {'text': 'acknowledge A check in an OK state on some host'};
+        const bot = {
+            reply: function (originalMessage, message) {
+                expect(message).to.equal('The service seems to be in an OK state.');
+                done()
+            }
+        };
 
-            handleAcknowledgement(bot, inputText);
-        });
+        handleAcknowledgement(bot, inputText);
+    });
 
-        it('should respond with a error if the input is not a real host', done => {
-            const inputText = {'text': 'acknowledge Puppet run result across all exchanges on not-a-host'};
-            const bot = {
-                reply: function (originalMessage, message) {
-                    expect(message).to.equal('I can\'t seem to find that service');
-                    done()
-                }
-            };
+    it('should respond with an error if the not in a valid format', done => {
+        const inputText = {'text': 'acknowledge someone for me please'};
+        const bot = {
+            reply: function (originalMessage, message) {
+                expect(message).to.equal('Invalid input for acknowledge.');
+                done()
+            }
+        };
 
-            handleAcknowledgement(bot, inputText);
-        });
-
-        it('should respond with an error if the inputted service is in an OK state', done => {
-            const inputText = {'text': 'acknowledge A check in an OK state on some host'};
-            const bot = {
-                reply: function (originalMessage, message) {
-                    expect(message).to.equal('The service seems to be in an OK state.');
-                    done()
-                }
-            };
-
-            handleAcknowledgement(bot, inputText);
-        });
-
-        it('should respond with an error if the not in a valid format', done => {
-            const inputText = {'text': 'acknowledge someone for me please'};
-            const bot = {
-                reply: function (originalMessage, message) {
-                    expect(message).to.equal('Invalid input for acknowledge.');
-                    done()
-                }
-            };
-
-            handleAcknowledgement(bot, inputText);
-        })
+        handleAcknowledgement(bot, inputText);
     })
 });
 
