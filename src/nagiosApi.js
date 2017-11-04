@@ -1,8 +1,8 @@
-import { buildAcknowledgementRequest } from './requestBuilder'
+import { constructNagiosCommand } from './commandBuilder'
 import { sendPost } from './nagiosRequest'
 
 export const acknowledgement = (host, service, cb) => {
-    const acknowledgementSender = buildAcknowledgementRequest(sendPost);
+    const acknowledgeService = constructNagiosCommand(sendPost);
 
-    acknowledgementSender(host, service, cb)
+    acknowledgeService(host, service, cb)
 };

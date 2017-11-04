@@ -1,9 +1,9 @@
 import { describe, it } from 'mocha'
 import { expect, should } from 'chai'
 
-import { buildAcknowledgementRequest } from '../src/requestBuilder'
+import { constructNagiosCommand } from '../src/commandBuilder'
 
-describe('buildAcknowledgementRequest', () => {
+describe('constructNagiosCommand', () => {
 
     it('should send the correct data blob', () => {
         const validInput = { 'host': 'some host', 'service': 'some service' };
@@ -21,7 +21,7 @@ describe('buildAcknowledgementRequest', () => {
             expect(data).to.deep.equal(expectedData)
         };
 
-        const acknowledge = buildAcknowledgementRequest(stubSendPost);
+        const acknowledge = constructNagiosCommand(stubSendPost);
 
         acknowledge(validInput.host, validInput.service, () => {})
     });
@@ -35,7 +35,7 @@ describe('buildAcknowledgementRequest', () => {
             cb({ error: 'failed' }, null)
         };
 
-        const acknowledge = buildAcknowledgementRequest(stubSendPost);
+        const acknowledge = constructNagiosCommand(stubSendPost);
 
         const callback = (err, res) => {
             if (err) {
@@ -58,7 +58,7 @@ describe('buildAcknowledgementRequest', () => {
             cb({ result: 'OK' }, null)
         };
 
-        const acknowledge = buildAcknowledgementRequest(stubSendPost);
+        const acknowledge = constructNagiosCommand(stubSendPost);
 
         const callback = (err, res) => {
             if (err) {

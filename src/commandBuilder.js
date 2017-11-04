@@ -1,5 +1,5 @@
 
-export const buildAcknowledgementRequest = sendPost => (host, service, cb) => {
+export const constructNagiosCommand = sendPost => (host, service, cb) => {
         const data = {
             host: host,
             service: service,
