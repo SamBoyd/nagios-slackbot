@@ -1,4 +1,4 @@
-import { stateOfCheckIsOK } from './serviceStatusGetter'
+import { stateOfCheckIsOK } from './nagiosServiceApi'
 import { acknowledgement } from './nagiosApi'
 
 export const parse = (m) => {

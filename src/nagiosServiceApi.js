@@ -28,3 +28,7 @@ export const isAService = (service, host, callback) => {
         }
     })
 };
+
+export const stateOfCheckIsOK = (service) => {
+    return (service === 'A check in an OK state')
+};

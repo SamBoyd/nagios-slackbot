@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import nock from 'nock'
 
 
-import { getAllServices, isAService} from '../src/serviceStore'
+import { getAllServices, isAService} from '../src/nagiosServiceApi'
 
 describe('ServiceStore', () => {
 
