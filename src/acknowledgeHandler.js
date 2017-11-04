@@ -1,5 +1,5 @@
 import { stateOfServiceIsOK } from './nagiosServiceApi'
-import { acknowledgeService } from './nagiosApi'
+import { acknowledgeService } from './nagiosCommandApi'
 import { parseInputForAcknowledge } from './inputParser'
 
 export const handleAcknowledgement = (bot, message) => {
