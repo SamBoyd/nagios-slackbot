@@ -32,6 +32,11 @@ export const handleAcknowledgement = (bot, message) => {
 
     let parsedAcknowledge = parse(message.text);
 
+    if ('error' in parsedAcknowledge) {
+        bot.reply(message, 'Invalid input for acknowledge.');
+        return
+    }
+
     if (stateOfCheckIsOK(parsedAcknowledge.service)) {
         bot.reply(message, 'The service seems to be in an OK state.');
         return

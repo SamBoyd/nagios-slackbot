@@ -50,7 +50,7 @@ describe('Acknowledge Hander', () => {
 
         });
 
-        it('should respond to a with the correct msg', done => {
+        it('should respond to a with the correct msg on success', done => {
             const inputText = {'text': 'acknowledge Upload Auction Logs to S3 on unrulyx-sg-018'};
             const bot = {
                 reply: function (orginalMessage, message) {
@@ -74,22 +74,36 @@ describe('Acknowledge Hander', () => {
             handleAcknowledgement(bot, inputText);
         });
 
-        it('should respond with a error if the input is not a real host', () => {
+        it('should respond with a error if the input is not a real host', done => {
             const inputText = {'text': 'acknowledge Puppet run result across all exchanges on not-a-host'};
             const bot = {
                 reply: function (originalMessage, message) {
                     expect(message).to.equal('I can\'t seem to find that service');
+                    done()
                 }
             };
 
             handleAcknowledgement(bot, inputText);
         });
 
-        it('should respond with an error if the inputted service is in an OK state', () => {
+        it('should respond with an error if the inputted service is in an OK state', done => {
             const inputText = {'text': 'acknowledge A check in an OK state on some host'};
             const bot = {
                 reply: function (originalMessage, message) {
-                    expect(message).to.equal('The service seems to be in an OK state.')
+                    expect(message).to.equal('The service seems to be in an OK state.');
+                    done()
+                }
+            };
+
+            handleAcknowledgement(bot, inputText);
+        });
+
+        it('should respond with an error if the not in a valid format', done => {
+            const inputText = {'text': 'acknowledge someone for me please'};
+            const bot = {
+                reply: function (originalMessage, message) {
+                    expect(message).to.equal('Invalid input for acknowledge.');
+                    done()
                 }
             };
 
