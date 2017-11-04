@@ -26,7 +26,7 @@ describe('handleAcknowledge', () => {
         };
 
         nock('http://monitor.unrulymedia.com')
-            .post('/api', acknowledgeRequestData)
+            .post('/acknowledge', acknowledgeRequestData)
             .reply(200, successfulResponse);
 
     });

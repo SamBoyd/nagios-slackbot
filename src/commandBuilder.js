@@ -10,7 +10,7 @@ export const constructNagiosCommand = sendPost => (host, service, cb) => {
             author: "nagios-slack-bot"
         };
 
-        const aknowledgementEndpoint = 'api';
+        const aknowledgementEndpoint = 'acknowledge';
 
         sendPost(aknowledgementEndpoint, data, cb)
 };
