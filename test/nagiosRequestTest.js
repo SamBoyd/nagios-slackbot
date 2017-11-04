@@ -8,13 +8,14 @@ const superagent = require('superagent');
 import { sendPost } from '../src/nagiosRequest'
 
 describe('sendPost', () => {
-    it('should send the request to the correct host', () => {
+    it('should send the request to the correct host and endpoint', () => {
 
         const expectedHost = 'http://monitor.unrulymedia.com/api';
+        const endpoint = 'api';
 
         let request = sinon.spy(superagent, 'post');
 
-        sendPost(expectedHost, () => {});
+        sendPost(endpoint, expectedHost, () => {});
 
         request.restore();
         sinon.assert.calledOnce(request);
@@ -23,13 +24,14 @@ describe('sendPost', () => {
 
     it('should send the correct data', done => {
         const expectedData = { body: 'some data'};
+        const endpoint = 'api';
 
         nock('http://monitor.unrulymedia.com')
             .post('/api', expectedData )
             .reply(200, { ok: true });
 
 
-        sendPost(expectedData, (err, res) => {
+        sendPost(endpoint, expectedData, (err, res) => {
             expect(res.body).to.deep.equal({ ok: true });
             done()
         });

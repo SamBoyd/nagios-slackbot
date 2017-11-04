@@ -17,13 +17,13 @@ describe('constructNagiosCommand', () => {
             author: "nagios-slack-bot"
         };
 
-        const stubSendPost = (data, cb) => {
-            expect(data).to.deep.equal(expectedData)
+        const stubSendPost = (endpoint, data, cb) => {
+            expect(data).to.deep.equal(expectedData);
         };
 
-        const acknowledge = constructNagiosCommand(stubSendPost);
+        const sendAcknowledgementCommand = constructNagiosCommand(stubSendPost);
 
-        acknowledge(validInput.host, validInput.service, () => {})
+        sendAcknowledgementCommand(validInput.host, validInput.service, () => {})
     });
 
 
@@ -31,11 +31,11 @@ describe('constructNagiosCommand', () => {
         const validInput = { 'host': 'some host', 'service': 'some service' };
         const expectedResult = { 'error': 'failed'};
 
-        const stubSendPost = (data, cb) => {
+        const stubSendPost = (endpoint, data, cb) => {
             cb({ error: 'failed' }, null)
         };
 
-        const acknowledge = constructNagiosCommand(stubSendPost);
+        const sendAcknowledgementCommand = constructNagiosCommand(stubSendPost);
 
         const callback = (err, res) => {
             if (err) {
@@ -46,19 +46,19 @@ describe('constructNagiosCommand', () => {
             }
         };
 
-        acknowledge(validInput.service, validInput.host, callback)
+        sendAcknowledgementCommand(validInput.service, validInput.host, callback)
     });
 
     it('should return success msg if it succedes', done => {
-        const validInput = { 'host': 'some host', 'service': 'some service' };
+        const validInput = { 'host': 'some3 host', 'service': 'some service' };
 
         const expectedResult = { 'result': 'OK'};
 
-        const stubSendPost = (data, cb) => {
+        const stubSendPost = (endpoint, data, cb) => {
             cb({ result: 'OK' }, null)
         };
 
-        const acknowledge = constructNagiosCommand(stubSendPost);
+        const sendAcknowledgementCommand = constructNagiosCommand(stubSendPost);
 
         const callback = (err, res) => {
             if (err) {
@@ -69,6 +69,6 @@ describe('constructNagiosCommand', () => {
             }
         };
 
-        acknowledge(validInput.service, validInput.host, callback)
+        sendAcknowledgementCommand(validInput.service, validInput.host, callback)
     })
 });
