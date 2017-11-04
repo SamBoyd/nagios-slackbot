@@ -1,9 +1,9 @@
 import { describe, it } from 'mocha'
 import { expect, should } from 'chai'
 
-import { acknowledgmentBuilder } from '../src/acknowledge'
+import { buildAcknowledgementRequest } from '../src/requestBuilder'
 
-describe('acknowledgmentBuilder', () => {
+describe('buildAcknowledgementRequest', () => {
 
     it('should send the correct data blob', () => {
         const validInput = { 'host': 'some host', 'service': 'some service' };
@@ -21,7 +21,7 @@ describe('acknowledgmentBuilder', () => {
             expect(data).to.deep.equal(expectedData)
         };
 
-        const acknowledge = acknowledgmentBuilder(stubSendPost);
+        const acknowledge = buildAcknowledgementRequest(stubSendPost);
 
         acknowledge(validInput.host, validInput.service, () => {})
     });
@@ -35,7 +35,7 @@ describe('acknowledgmentBuilder', () => {
             cb({ error: 'failed' }, null)
         };
 
-        const acknowledge = acknowledgmentBuilder(stubSendPost);
+        const acknowledge = buildAcknowledgementRequest(stubSendPost);
 
         const callback = (err, res) => {
             if (err) {
@@ -58,7 +58,7 @@ describe('acknowledgmentBuilder', () => {
             cb({ result: 'OK' }, null)
         };
 
-        const acknowledge = acknowledgmentBuilder(stubSendPost);
+        const acknowledge = buildAcknowledgementRequest(stubSendPost);
 
         const callback = (err, res) => {
             if (err) {
