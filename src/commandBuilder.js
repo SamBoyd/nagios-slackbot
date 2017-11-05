@@ -1,5 +1,5 @@
 
-export const constructNagiosCommand = sendPost => (host, service, cb) => {
+export const constructAcknowledgeCommand = sendPost => (host, service, cb) => {
         const data = {
             host: host,
             service: service,
@@ -13,4 +13,17 @@ export const constructNagiosCommand = sendPost => (host, service, cb) => {
         const aknowledgementEndpoint = 'acknowledge';
 
         sendPost(aknowledgementEndpoint, data, cb)
+};
+
+export const constructScheduleDowntimeCommand = sendPost => (host, service, duration, cb) => {
+    const data = {
+        host: host,
+        service: service,
+        duration: duration,
+        comment: "Service " + service + " acknowledged from slack",
+        author: "nagios-slack-bot"
+    };
+
+    const scheduleDowntimeEndpoint = 'schedule_downtime';
+    sendPost(scheduleDowntimeEndpoint, data, cb)
 };
