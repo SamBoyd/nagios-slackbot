@@ -1,4 +1,4 @@
-import { constructAcknowledgeCommand, constructScheduleDowntimeCommand } from './commandBuilder'
+import { constructAcknowledgeCommand, constructServiceDowntimeCommand, constructHostDowntimeCommand } from './commandBuilder'
 import { sendPost } from './nagiosRequest'
 
 export const acknowledgeService = (host, service, cb) => {
@@ -9,7 +9,13 @@ export const acknowledgeService = (host, service, cb) => {
 
 
 export const scheduleDowntimeForService = (host, service, downtime, cb) => {
-    const sendDowntimeCommand = constructScheduleDowntimeCommand(sendPost);
+    const sendDowntimeCommand = constructServiceDowntimeCommand(sendPost);
 
     sendDowntimeCommand(host, service, downtime, cb)
+};
+
+export const scheduleDowntimeForHost = (host, downtime, cb) => {
+    const sendDowntimeCommand = constructHostDowntimeCommand(sendPost);
+
+    sendDowntimeCommand(host, downtime, cb)
 };

@@ -6,18 +6,6 @@ import { handleDowntime } from '../src/downtimeHandler'
 
 describe('handleDowntime', () => {
 
-    xit('should give an error', done => {
-        const inputText = {text: 'some text'};
-        const bot = {
-            reply: function (orginalMessage, message) {
-                expect(message).to.equal('I can\'t seem to find that service');
-                done();
-            }
-        };
-
-        handleDowntime(bot, inputText)
-    });
-
     it('should respond with an error if the not in a valid format', done => {
         const inputText = {'text': 'schedule downtime for blah blah blah'};
         const bot = {
@@ -42,7 +30,7 @@ describe('handleDowntime', () => {
         handleDowntime(bot, inputText);
     });
 
-    it.only('should send the correct request and reply with the correct message', done => {
+    it('should send the correct request and reply with the correct message', done => {
         const inputText = {text: 'schedule downtime for Check auction log archiving on S3 on unrulyx-sg-018 for 10'};
         const bot = {
             reply: function (orginalMessage, message) {
@@ -73,7 +61,39 @@ describe('handleDowntime', () => {
             .reply(200, sampleStatusReponse);
 
         handleDowntime(bot, inputText)
-    })
+    });
+
+    it('should send the correct request and reply with the correct message when adding downtime to host', done => {
+        const inputText = {text: 'schedule downtime on unrulyx-sg-018 for 10'};
+        const bot = {
+            reply: function (orginalMessage, message) {
+                expect(message).to.equal('Host:unrulyx-sg-018');
+                done();
+            }
+        };
+
+        const expectedPostData = {
+            host: 'unrulyx-sg-018',
+            duration: '10',
+            author: 'nagios-slack-bot',
+            comment: 'Downtime on unrulyx-sg-018 scheduled from slack'
+        };
+
+        const successfulResponse = {
+            content: 'schedule_downtime',
+            result: true
+        };
+
+        nock('http://monitor.unrulymedia.com')
+            .post('/schedule_downtime', expectedPostData)
+            .reply(200, successfulResponse);
+
+        nock('http://monitor.unrulymedia.com')
+            .get('/status')
+            .reply(200, sampleStatusReponse);
+
+        handleDowntime(bot, inputText)
+    });
 });
 
 

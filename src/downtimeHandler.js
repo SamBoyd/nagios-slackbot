@@ -1,5 +1,6 @@
 import { parseInputForDowntime } from './inputParser'
-import { scheduleDowntimeForService } from './nagiosCommandApi'
+import { scheduleDowntimeForService, scheduleDowntimeForHost } from './nagiosCommandApi'
+
 export const handleDowntime = (bot, message) => {
 
   const parsedInput = parseInputForDowntime(message.text);
@@ -9,13 +10,23 @@ export const handleDowntime = (bot, message) => {
       return
   }
 
-  scheduleDowntimeForService(parsedInput.host, parsedInput.service, parsedInput.duration, (err, res) => {
-      if (err) {
-          console.log('', err);
-          bot.reply(message, 'I can\'t seem to find that service')
-      } else {
-          bot.reply(message, "Service:" + parsedInput.service + ", Host:" + parsedInput.host);
-      }
-  });
-
+  if (parsedInput.service) {
+      scheduleDowntimeForService(parsedInput.host, parsedInput.service, parsedInput.duration, (err, res) => {
+          if (err) {
+              console.log('', err);
+              bot.reply(message, 'I can\'t seem to find that service')
+          } else {
+              bot.reply(message, "Service:" + parsedInput.service + ", Host:" + parsedInput.host);
+          }
+      });
+  } else {
+      scheduleDowntimeForHost(parsedInput.host, parsedInput.duration, (err, res) => {
+          if (err) {
+              console.log('', err);
+              bot.reply(message, 'I can\'t seem to find that service')
+          } else {
+              bot.reply(message, "Host:" + parsedInput.host);
+          }
+      });
+  }
 };

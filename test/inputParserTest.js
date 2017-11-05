@@ -29,7 +29,7 @@ describe('parse', () => {
             expect(parsed).to.have.property('error');
         });
 
-        it('should correctly parse a downtime command', () => {
+        it('should correctly parse a downtime command with a service', () => {
             let parsed = parseInputForDowntime('schedule downtime for Puppet run result across all exchanges on hostless-supply-side for 100');
 
             expect(parsed).to.have.property('service');
@@ -37,6 +37,17 @@ describe('parse', () => {
             expect(parsed).to.have.property('duration');
 
             expect(parsed.service).to.equal('Puppet run result across all exchanges');
+            expect(parsed.host).to.equal('hostless-supply-side');
+            expect(parsed.duration).to.equal('100');
+        });
+
+        it('should correctly parse a downtime command without a service', () => {
+            let parsed = parseInputForDowntime('schedule downtime on hostless-supply-side for 100');
+
+            expect(parsed).to.not.have.property('service');
+            expect(parsed).to.have.property('host');
+            expect(parsed).to.have.property('duration');
+
             expect(parsed.host).to.equal('hostless-supply-side');
             expect(parsed.duration).to.equal('100');
         });

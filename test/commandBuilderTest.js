@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha'
 import { expect, should } from 'chai'
 
-import { constructAcknowledgeCommand, constructScheduleDowntimeCommand } from '../src/commandBuilder'
+import { constructAcknowledgeCommand, constructServiceDowntimeCommand, constructHostDowntimeCommand } from '../src/commandBuilder'
 
 describe('commandBuilder', () => {
     describe('constructAcknowledgeCommand', () => {
@@ -88,7 +88,7 @@ describe('commandBuilder', () => {
         })
     });
 
-    describe('constructScheduleDowntimeCommand', () => {
+    describe('constructServiceDowntimeCommand', () => {
         it('should send request to the correct endpoint', () => {
             const validInput = {
                 host: 'some host',
@@ -101,12 +101,12 @@ describe('commandBuilder', () => {
                 expect(endpoint).to.deep.equal(expectedEndpoint);
             };
 
-            const sendScheduleDowntimeCommand = constructScheduleDowntimeCommand(stubSendPost);
+            const sendScheduleDowntimeCommand = constructServiceDowntimeCommand(stubSendPost);
 
             sendScheduleDowntimeCommand(validInput.host, validInput.service, validInput.duration, () => {})
         });
 
-        it('should send the correct data blob', () => {
+        it('should send the correct data blob for adding downtime to a service', () => {
             const validInput = {
                 host: 'some host',
                 service: 'some service',
@@ -116,7 +116,7 @@ describe('commandBuilder', () => {
                 host: 'some host',
                 service: 'some service',
                 duration: '100',
-                comment: "Service some service acknowledged from slack",
+                comment: "Downtime on service some service scheduled from slack",
                 author: "nagios-slack-bot"
             };
 
@@ -124,10 +124,32 @@ describe('commandBuilder', () => {
                 expect(data).to.deep.equal(expectedData);
             };
 
-            const sendScheduleDowntimeCommand = constructScheduleDowntimeCommand(stubSendPost);
+            const sendScheduleDowntimeCommand = constructServiceDowntimeCommand(stubSendPost);
 
             sendScheduleDowntimeCommand(validInput.host, validInput.service, validInput.duration, () => {})
         });
+
+        it('should send the correct data blob for adding downtime to a host', () => {
+            const validInput = {
+                host: 'some host',
+                duration: '100'
+            };
+            const expectedData = {
+                host: 'some host',
+                duration: '100',
+                comment: "Downtime on some host scheduled from slack",
+                author: "nagios-slack-bot"
+            };
+
+            const stubSendPost = (endpoint, data, cb) => {
+                expect(data).to.deep.equal(expectedData);
+            };
+
+            const sendScheduleDowntimeCommand = constructHostDowntimeCommand(stubSendPost);
+
+            sendScheduleDowntimeCommand(validInput.host, validInput.duration, () => {})
+        });
+
 
 
         it('should return an error if request failed', done => {
@@ -142,7 +164,7 @@ describe('commandBuilder', () => {
                 cb({error: 'failed'}, null)
             };
 
-            const sendScheduleDowntimeCommand = constructScheduleDowntimeCommand(stubSendPost);
+            const sendScheduleDowntimeCommand = constructServiceDowntimeCommand(stubSendPost);
 
             const callback = (err, res) => {
                 if (err) {
@@ -168,7 +190,7 @@ describe('commandBuilder', () => {
                 cb({result: 'OK'}, null)
             };
 
-            const sendScheduleDowntimeCommand = constructScheduleDowntimeCommand(stubSendPost);
+            const sendScheduleDowntimeCommand = constructServiceDowntimeCommand(stubSendPost);
 
             const callback = (err, res) => {
                 if (err) {
