@@ -20,7 +20,7 @@ export const constructScheduleDowntimeCommand = sendPost => (host, service, dura
         host: host,
         service: service,
         duration: duration,
-        comment: "Service " + service + " acknowledged from slack",
+        comment: "Downtime on service " + service + " scheduled from slack",
         author: "nagios-slack-bot"
     };
 
