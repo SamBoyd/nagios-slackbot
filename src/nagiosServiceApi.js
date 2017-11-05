@@ -32,3 +32,14 @@ export const isAService = (service, host, callback) => {
 export const stateOfServiceIsOK = (service) => {
     return (service === 'A check in an OK state')
 };
+
+export const isAHost = (host, callback) => {
+    getAllServices((err, res) => {
+        if (err) {
+            callback(err, null)
+        } else {
+            const hostExists = host in res;
+            callback(null, hostExists)
+        }
+    })
+};

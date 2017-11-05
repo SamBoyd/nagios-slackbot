@@ -94,6 +94,22 @@ describe('handleDowntime', () => {
 
         handleDowntime(bot, inputText)
     });
+
+    it('should reply with the correct message when adding downtime to an unknown host', done => {
+        const inputText = {text: 'schedule downtime on not-a-host for 10'};
+        const bot = {
+            reply: function (orginalMessage, message) {
+                expect(message).to.equal('I can\'t seem to find that host');
+                done()
+            }
+        };
+
+        nock('http://monitor.unrulymedia.com')
+            .get('/status')
+            .reply(200, sampleStatusReponse);
+
+        handleDowntime(bot, inputText)
+    })
 });
 
 

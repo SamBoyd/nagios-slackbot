@@ -44,7 +44,7 @@ describe('handleAcknowledge', () => {
     });
 
     it('should respond with a error if the input is not a real service', done => {
-        const inputText = {'text': 'acknowledge This is not a service on hostless-supply-side'};
+        const inputText = {'text': 'acknowledge not-a-service on hostless-supply-side'};
         const bot = {
             reply: function (originalMessage, message) {
                 expect(message).to.equal('I can\'t seem to find that service');
@@ -67,7 +67,7 @@ describe('handleAcknowledge', () => {
         handleAcknowledgement(bot, inputText);
     });
 
-    it('should respond with an error if the inputted service is in an OK state', done => {
+    xit('should respond with an error if the inputted service is in an OK state', done => {
         const inputText = {'text': 'acknowledge A check in an OK state on some host'};
         const bot = {
             reply: function (originalMessage, message) {

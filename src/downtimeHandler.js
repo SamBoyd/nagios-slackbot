@@ -1,5 +1,6 @@
 import { parseInputForDowntime } from './inputParser'
 import { scheduleDowntimeForService, scheduleDowntimeForHost } from './nagiosCommandApi'
+import { isAHost } from "./nagiosServiceApi";
 
 export const handleDowntime = (bot, message) => {
 
@@ -14,19 +15,25 @@ export const handleDowntime = (bot, message) => {
       scheduleDowntimeForService(parsedInput.host, parsedInput.service, parsedInput.duration, (err, res) => {
           if (err) {
               console.log('', err);
-              bot.reply(message, 'I can\'t seem to find that service')
+              bot.reply(message, 'Unable to add downtime for that service')
           } else {
               bot.reply(message, "Service:" + parsedInput.service + ", Host:" + parsedInput.host);
           }
       });
   } else {
-      scheduleDowntimeForHost(parsedInput.host, parsedInput.duration, (err, res) => {
-          if (err) {
-              console.log('', err);
-              bot.reply(message, 'I can\'t seem to find that service')
-          } else {
-              bot.reply(message, "Host:" + parsedInput.host);
+      isAHost(parsedInput.host, (err, isAHost) => {
+          if (!isAHost) {
+              bot.reply(message, 'I can\'t seem to find that host');
+              return
           }
+
+          scheduleDowntimeForHost(parsedInput.host, parsedInput.duration, (err, res) => {
+              if (err) {
+                  bot.reply(message, 'Unable to add downtime for that host')
+              } else {
+                  bot.reply(message, "Host:" + parsedInput.host);
+              }
+          });
       });
   }
 };
